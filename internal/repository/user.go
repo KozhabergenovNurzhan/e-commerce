@@ -20,13 +20,10 @@ func NewUserRepo(db *sqlx.DB) *UserRepo {
 }
 
 func (r *UserRepo) Create(ctx context.Context, u *models.User) error {
-	query := `
-		INSERT INTO users (email, password_hash, role)
-		VALUES ($1, $2, $3)
-		RETURNING id, created_at`
-
-	return r.db.QueryRowContext(ctx, query, u.Email, u.PasswordHash, u.Role).
-		Scan(&u.ID, &u.CreatedAt)
+	return r.db.QueryRowContext(ctx,
+		`INSERT INTO users (email, password_hash, role) VALUES ($1, $2, $3) RETURNING id, created_at`,
+		u.Email, u.PasswordHash, u.Role,
+	).Scan(&u.ID, &u.CreatedAt)
 }
 
 func (r *UserRepo) GetByEmail(ctx context.Context, email string) (*models.User, error) {

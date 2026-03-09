@@ -28,6 +28,7 @@ func New(svc *service.Services, log *slog.Logger, jwtSecret string) *gin.Engine 
 
 		api.GET("/products", h.ListProducts)
 		api.GET("/products/:id", h.GetProduct)
+		api.GET("/categories", h.ListCategories)
 
 		protected := api.Group("")
 		protected.Use(middleware.JWT(jwtSecret))
@@ -46,6 +47,10 @@ func New(svc *service.Services, log *slog.Logger, jwtSecret string) *gin.Engine 
 				admin.POST("/products", h.CreateProduct)
 				admin.PUT("/products/:id", h.UpdateProduct)
 				admin.DELETE("/products/:id", h.DeleteProduct)
+
+				admin.POST("/categories", h.CreateCategory)
+				admin.PUT("/categories/:id", h.UpdateCategory)
+				admin.DELETE("/categories/:id", h.DeleteCategory)
 			}
 		}
 	}

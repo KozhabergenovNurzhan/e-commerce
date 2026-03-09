@@ -13,5 +13,4 @@ func New(svc *service.Services) *Handler {
 	return &Handler{svc: svc}
 }
 
-// respondError — shortcut для хендлеров
 var respondError = pkg.RespondError

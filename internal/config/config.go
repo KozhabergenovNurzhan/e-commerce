@@ -5,6 +5,8 @@ import (
 	"os"
 	"strconv"
 	"time"
+
+	"github.com/joho/godotenv"
 )
 
 type Config struct {
@@ -39,6 +41,7 @@ func (c *Config) DSN() string {
 }
 
 func MustLoad() *Config {
+	_ = godotenv.Load()
 	ttlMinutes, _ := strconv.Atoi(getEnv("JWT_TTL_MINUTES", "60"))
 
 	return &Config{

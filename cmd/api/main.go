@@ -33,10 +33,11 @@ func main() {
 	log.Info("connected to postgres")
 
 	// repos
-	userRepo    := repository.NewUserRepo(db)
+	userRepo := repository.NewUserRepo(db)
 	productRepo := repository.NewProductRepo(db)
-	orderRepo   := repository.NewOrderRepo(db)
-	cartRepo    := repository.NewCartRepo(db)
+	orderRepo := repository.NewOrderRepo(db)
+	cartRepo := repository.NewCartRepo(db)
+	categoryRepo := repository.NewCategoryRepo(db)
 
 	// services
 	svc := service.NewServices(
@@ -44,9 +45,9 @@ func main() {
 		service.NewProductService(productRepo),
 		service.NewCartService(cartRepo, productRepo),
 		service.NewOrderService(orderRepo, cartRepo, productRepo),
+		service.NewCategoryService(categoryRepo),
 	)
 
-	// server
 	r := server.New(svc, log, cfg.JWT.Secret)
 
 	log.Info("starting server", slog.String("addr", cfg.HTTPAddr))
