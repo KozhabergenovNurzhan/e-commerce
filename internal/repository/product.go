@@ -41,7 +41,7 @@ func (r *ProductRepo) GetByID(ctx context.Context, id int64) (*models.Product, e
 	return &p, nil
 }
 
-func (r *ProductRepo) List(ctx context.Context, limit, offset int) ([]models.Product, error) {
+func (r *ProductRepo) GetAll(ctx context.Context, limit, offset int) ([]models.Product, error) {
 	var products []models.Product
 	err := r.db.SelectContext(ctx, &products,
 		`SELECT * FROM products ORDER BY created_at DESC LIMIT $1 OFFSET $2`,

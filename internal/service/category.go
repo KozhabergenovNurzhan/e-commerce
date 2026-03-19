@@ -27,8 +27,8 @@ func (s *CategoryService) Create(ctx context.Context, in CreateCategoryInput) (*
 	return c, nil
 }
 
-func (s *CategoryService) List(ctx context.Context) ([]models.Category, error) {
-	return s.repo.List(ctx)
+func (s *CategoryService) GetAll(ctx context.Context) ([]models.Category, error) {
+	return s.repo.GetAll(ctx)
 }
 
 func (s *CategoryService) Update(ctx context.Context, id int64, in CreateCategoryInput) (*models.Category, error) {

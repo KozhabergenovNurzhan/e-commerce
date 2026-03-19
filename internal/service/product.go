@@ -45,7 +45,7 @@ func (s *ProductService) List(ctx context.Context, limit, offset int) ([]models.
 	if limit <= 0 || limit > 100 {
 		limit = 20
 	}
-	return s.repo.List(ctx, limit, offset)
+	return s.repo.GetAll(ctx, limit, offset)
 }
 
 func (s *ProductService) Update(ctx context.Context, p *models.Product) error {

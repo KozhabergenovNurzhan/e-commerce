@@ -26,7 +26,7 @@ func (r *CategoryRepo) Create(ctx context.Context, c *models.Category) error {
 	).Scan(&c.ID)
 }
 
-func (r *CategoryRepo) List(ctx context.Context) ([]models.Category, error) {
+func (r *CategoryRepo) GetAll(ctx context.Context) ([]models.Category, error) {
 	var categories []models.Category
 	err := r.db.SelectContext(ctx, &categories, `SELECT * FROM categories ORDER BY id`)
 	if err != nil {
