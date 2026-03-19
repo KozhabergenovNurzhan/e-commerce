@@ -11,6 +11,14 @@ import (
 	"ecommerce/internal/models"
 )
 
+type CategoryRepository interface {
+	Create(ctx context.Context, c *models.Category) error
+	List(ctx context.Context) ([]models.Category, error)
+	GetByID(ctx context.Context, id int64) (*models.Category, error)
+	Update(ctx context.Context, c *models.Category) error
+	Delete(ctx context.Context, id int64) error
+}
+
 type CategoryRepo struct {
 	db *sqlx.DB
 }
@@ -26,7 +34,7 @@ func (r *CategoryRepo) Create(ctx context.Context, c *models.Category) error {
 	).Scan(&c.ID)
 }
 
-func (r *CategoryRepo) GetAll(ctx context.Context) ([]models.Category, error) {
+func (r *CategoryRepo) List(ctx context.Context) ([]models.Category, error) {
 	var categories []models.Category
 	err := r.db.SelectContext(ctx, &categories, `SELECT * FROM categories ORDER BY id`)
 	if err != nil {

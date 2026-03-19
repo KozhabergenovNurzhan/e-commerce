@@ -11,6 +11,12 @@ import (
 	"ecommerce/internal/models"
 )
 
+type OrderRepository interface {
+	Create(ctx context.Context, o *models.Order) error
+	GetByID(ctx context.Context, id int64) (*models.Order, error)
+	ListByUser(ctx context.Context, userID int64) ([]models.Order, error)
+}
+
 type OrderRepo struct {
 	db *sqlx.DB
 }

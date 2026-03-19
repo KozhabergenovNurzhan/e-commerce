@@ -9,6 +9,13 @@ import (
 	"ecommerce/internal/models"
 )
 
+type CartRepository interface {
+	GetByUser(ctx context.Context, userID int64) ([]models.CartItem, error)
+	Upsert(ctx context.Context, item *models.CartItem) error
+	Remove(ctx context.Context, userID, productID int64) error
+	Clear(ctx context.Context, userID int64) error
+}
+
 type CartRepo struct {
 	db *sqlx.DB
 }
