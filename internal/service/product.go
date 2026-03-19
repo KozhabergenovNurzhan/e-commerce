@@ -8,10 +8,10 @@ import (
 )
 
 type ProductService struct {
-	repo *repository.ProductRepo
+	repo repository.ProductRepository
 }
 
-func NewProductService(repo *repository.ProductRepo) *ProductService {
+func NewProductService(repo repository.ProductRepository) *ProductService {
 	return &ProductService{repo: repo}
 }
 
@@ -21,6 +21,18 @@ type CreateProductInput struct {
 	Price       float64 `json:"price" binding:"required,gt=0"`
 	Stock       int     `json:"stock" binding:"required,gte=0"`
 	CategoryID  int64   `json:"category_id" binding:"required"`
+}
+
+type ListProductsInput struct {
+	Search     string
+	CategoryID int64
+	Limit      int
+	Offset     int
+}
+
+type ListProductsOutput struct {
+	Data  []models.Product `json:"data"`
+	Total int              `json:"total"`
 }
 
 func (s *ProductService) Create(ctx context.Context, in CreateProductInput) (*models.Product, error) {
@@ -41,11 +53,22 @@ func (s *ProductService) GetByID(ctx context.Context, id int64) (*models.Product
 	return s.repo.GetByID(ctx, id)
 }
 
-func (s *ProductService) List(ctx context.Context, limit, offset int) ([]models.Product, error) {
-	if limit <= 0 || limit > 100 {
-		limit = 20
+func (s *ProductService) List(ctx context.Context, in ListProductsInput) (*ListProductsOutput, error) {
+	if in.Limit <= 0 || in.Limit > 100 {
+		in.Limit = 20
 	}
-	return s.repo.GetAll(ctx, limit, offset)
+
+	products, total, err := s.repo.List(ctx, repository.ProductFilter{
+		Search:     in.Search,
+		CategoryID: in.CategoryID,
+		Limit:      in.Limit,
+		Offset:     in.Offset,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return &ListProductsOutput{Data: products, Total: total}, nil
 }
 
 func (s *ProductService) Update(ctx context.Context, p *models.Product) error {

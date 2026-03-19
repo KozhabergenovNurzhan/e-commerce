@@ -24,6 +24,8 @@ func New(svc *service.Services, log *slog.Logger, jwtSecret string) *gin.Engine 
 		{
 			auth.POST("/register", h.Register)
 			auth.POST("/login", h.Login)
+			auth.POST("/refresh", h.Refresh)
+			auth.POST("/logout", h.Logout)
 		}
 
 		api.GET("/products", h.ListProducts)

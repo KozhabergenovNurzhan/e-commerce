@@ -38,10 +38,11 @@ func main() {
 	orderRepo := repository.NewOrderRepo(db)
 	cartRepo := repository.NewCartRepo(db)
 	categoryRepo := repository.NewCategoryRepo(db)
+	tokenRepo := repository.NewTokenRepo(db)
 
 	// services
 	svc := service.NewServices(
-		service.NewAuthService(userRepo, cfg.JWT.Secret, cfg.JWT.TTL),
+		service.NewAuthService(userRepo, tokenRepo, cfg.JWT.Secret, cfg.JWT.TTL),
 		service.NewProductService(productRepo),
 		service.NewCartService(cartRepo, productRepo),
 		service.NewOrderService(orderRepo, cartRepo, productRepo),

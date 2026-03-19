@@ -1,6 +1,8 @@
 package auth
 
 import (
+	"crypto/rand"
+	"encoding/hex"
 	"fmt"
 	"time"
 
@@ -15,7 +17,7 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
-func GenerateToken(userID int64, role models.Role, secret string, ttl time.Duration) (string, error) {
+func GenerateAccessToken(userID int64, role models.Role, secret string, ttl time.Duration) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, Claims{
 		UserID: userID,
 		Role:   role,
@@ -31,6 +33,14 @@ func GenerateToken(userID int64, role models.Role, secret string, ttl time.Durat
 	}
 
 	return signed, nil
+}
+
+func GenerateRefreshToken() (string, error) {
+	bytes := make([]byte, 32)
+	if _, err := rand.Read(bytes); err != nil {
+		return "", fmt.Errorf("generate refresh token: %w", err)
+	}
+	return hex.EncodeToString(bytes), nil
 }
 
 func ParseToken(tokenStr, secret string) (*Claims, error) {

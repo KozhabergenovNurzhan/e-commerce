@@ -12,14 +12,20 @@ import (
 func (h *Handler) ListProducts(c *gin.Context) {
 	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "20"))
 	offset, _ := strconv.Atoi(c.DefaultQuery("offset", "0"))
+	categoryID, _ := strconv.ParseInt(c.Query("category_id"), 10, 64)
 
-	products, err := h.svc.Product.List(c.Request.Context(), limit, offset)
+	out, err := h.svc.Product.List(c.Request.Context(), service.ListProductsInput{
+		Search:     c.Query("search"),
+		CategoryID: categoryID,
+		Limit:      limit,
+		Offset:     offset,
+	})
 	if err != nil {
 		respondError(c, err)
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": products})
+	c.JSON(http.StatusOK, out)
 }
 
 func (h *Handler) GetProduct(c *gin.Context) {

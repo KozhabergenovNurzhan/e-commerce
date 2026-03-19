@@ -10,7 +10,7 @@ import (
 )
 
 func (h *Handler) ListCategories(c *gin.Context) {
-	categories, err := h.svc.Category.GetAll(c.Request.Context())
+	categories, err := h.svc.Category.List(c.Request.Context())
 	if err != nil {
 		respondError(c, err)
 		return

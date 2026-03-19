@@ -31,11 +31,46 @@ func (h *Handler) Login(c *gin.Context) {
 		return
 	}
 
-	token, err := h.svc.Auth.Login(c.Request.Context(), in)
+	tokens, err := h.svc.Auth.Login(c.Request.Context(), in)
 	if err != nil {
 		respondError(c, err)
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"token": token})
+	c.JSON(http.StatusOK, tokens)
+}
+
+func (h *Handler) Refresh(c *gin.Context) {
+	var body struct {
+		RefreshToken string `json:"refresh_token" binding:"required"`
+	}
+	if err := c.ShouldBindJSON(&body); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	tokens, err := h.svc.Auth.Refresh(c.Request.Context(), body.RefreshToken)
+	if err != nil {
+		respondError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, tokens)
+}
+
+func (h *Handler) Logout(c *gin.Context) {
+	var body struct {
+		RefreshToken string `json:"refresh_token" binding:"required"`
+	}
+	if err := c.ShouldBindJSON(&body); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := h.svc.Auth.Logout(c.Request.Context(), body.RefreshToken); err != nil {
+		respondError(c, err)
+		return
+	}
+
+	c.Status(http.StatusNoContent)
 }
